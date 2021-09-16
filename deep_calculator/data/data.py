@@ -105,3 +105,32 @@ class DatasetGenerator():
         right_part = str(c)
         right_part_shifted = '!' + right_part
         return left_part, right_part, right_part_shifted
+
+
+def get_dataloaders(config, dataset_generator):
+    
+    train_ds = dataset_generator.generate_full_dataset(config['train_size'])
+    val_ds = dataset_generator.generate_simple_dataset(config['val_size'])
+    test_ds = dataset_generator.generate_simple_dataset(config['test_size'])
+
+    batch_size = config['batch_size']
+
+    train_dataloader = torch.utils.data.DataLoader(train_ds,
+                                                   batch_size=batch_size,
+                                                   shuffle=True,
+                                                   num_workers=1)
+    val_dataloader = torch.utils.data.DataLoader(val_ds,
+                                                 batch_size=batch_size,
+                                                 shuffle=False,
+                                                 num_workers=1)
+    test_dataloader = torch.utils.data.DataLoader(test_ds,
+                                                  batch_size=batch_size,
+                                                  shuffle=False,
+                                                  num_workers=1)
+
+    dataloaders = {
+        'train': train_dataloader,
+        'val': val_dataloader,
+        'test': test_dataloader,
+    }
+    return dataloaders
